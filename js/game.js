@@ -1,10 +1,10 @@
 // Configuración global del juego
 const GAME_CONFIG = {
-    TIMER_SECONDS: 50,        // Tiempo total del juego en segundos
-    TOTAL_CARDS: 9,         // Número total de cartas disponibles (1.png a 12.png)
-    PAIRS_TO_MATCH: 6,       // Número de pares que se usarán en el juego
+    TIMER_SECONDS: 5,        // Tiempo total del juego en segundos
+    AVAILABLE_CARDS: 8,      // Total de imágenes diferentes disponibles (del 1 al 8)
+    PAIRS_TO_MATCH: 6,       // Número de pares que se usarán en el juego (siempre 6 porque es 3x4)
     FLIP_ANIMATION_MS: 400,  // Duración de la animación de volteo en milisegundos
-    WIN_MESSAGE_MS: 200000,    // Duración del mensaje de victoria (2 segundos)
+    WIN_MESSAGE_MS: 2000,    // Duración del mensaje de victoria (2 segundos)
     LOSE_MESSAGE_MS: 200000,   // Duración del mensaje de derrota (2 segundos)
     NEXT_TURN_DELAY_MS: 100  // Delay antes de poder voltear la siguiente carta
 };
@@ -30,14 +30,23 @@ class MemoryGame {
     }
 
     createCards() {
-        // Crear array con números del 1 al total de cartas
-        const cardValues = Array.from({length: GAME_CONFIG.TOTAL_CARDS}, (_, i) => i + 1);
-        // Mezclar y tomar los primeros 6 números
-        const selectedValues = this.shuffleArray([...cardValues]).slice(0, GAME_CONFIG.PAIRS_TO_MATCH);
-        // Duplicar cada número para crear los pares
-        const allCards = [...selectedValues, ...selectedValues];
-        // Mezclar nuevamente para distribuir los pares
-        return this.shuffleArray(allCards);
+        // Array con los números de las imágenes disponibles (1 al 8)
+        const imageNumbers = Array.from({length: GAME_CONFIG.AVAILABLE_CARDS}, (_, i) => i );
+        
+        // Mezclar los números de imágenes
+        const shuffledImages = this.shuffleArray([...imageNumbers]);
+        
+        // Tomar solo 6 imágenes para los pares
+        const selectedImages = shuffledImages.slice(0, 6);
+        
+        // Crear el array de pares
+        const pairs = [];
+        selectedImages.forEach(imageNumber => {
+            pairs.push(imageNumber, imageNumber);
+        });
+        
+        // Mezclar los pares
+        return this.shuffleArray(pairs);
     }
 
     shuffleArray(array) {
@@ -56,7 +65,9 @@ class MemoryGame {
 
         const front = document.createElement('div');
         front.className = 'card-face card-front';
-        front.innerHTML = `<img src="img/front/${value}.png" alt="Card ${value}">`;
+        // Asegurarse de que value es un número entre 1 y 8
+        const imageNumber = ((value - 1) % GAME_CONFIG.AVAILABLE_CARDS) + 1;
+        front.innerHTML = `<img src="img/front/${imageNumber}.png" alt="Card ${imageNumber}">`;
 
         const back = document.createElement('div');
         back.className = 'card-face card-back';
