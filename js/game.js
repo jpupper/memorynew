@@ -4,7 +4,7 @@ const GAME_CONFIG = {
     AVAILABLE_CARDS: 8,      // Total de imágenes diferentes disponibles (del 1 al 8)
     PAIRS_TO_MATCH: 6,       // Número de pares que se usarán en el juego (siempre 6 porque es 3x4)
     FLIP_ANIMATION_MS: 400,  // Duración de la animación de volteo en milisegundos
-    WIN_MESSAGE_MS: 2000,    // Duración del mensaje de victoria (2 segundos)
+    WIN_MESSAGE_MS: 2000000,    // Duración del mensaje de victoria (2 segundos)
     LOSE_MESSAGE_MS: 200000,   // Duración del mensaje de derrota (2 segundos)
     NEXT_TURN_DELAY_MS: 100  // Delay antes de poder voltear la siguiente carta
 };
@@ -17,7 +17,7 @@ class MemoryGame {
         this.isPlaying = false;
         this.timeLeft = GAME_CONFIG.TIMER_SECONDS;
         this.timer = null;
-        this.isFlipping = false;  // Nuevo: para controlar si hay cartas en animación
+        this.isFlipping = false;
         
         this.gameBoard = document.querySelector('.game-board');
         this.startButton = document.getElementById('startButton');
@@ -27,6 +27,9 @@ class MemoryGame {
         this.loseMessage = document.getElementById('loseMessage');
         
         this.startButton.addEventListener('click', () => this.startGame());
+        
+        // Generar cartas al inicio
+        this.initializeGame();
     }
 
     createCards() {
@@ -84,19 +87,23 @@ class MemoryGame {
         return card;
     }
 
-    startGame() {
-        this.resetGame();
-        this.isPlaying = true;
-        this.startModal.style.display = 'none';
-        
+    initializeGame() {
         const cardValues = this.createCards();
-        this.gameBoard.innerHTML = '';
-        
         cardValues.forEach((value, index) => {
             const card = this.createCardElement(value, index);
             this.gameBoard.appendChild(card);
             this.cards.push(card);
         });
+        this.showStartModal();
+    }
+
+    showStartModal() {
+        this.startModal.style.display = 'flex';
+    }
+
+    startGame() {
+        this.isPlaying = true;
+        this.startModal.style.display = 'none';
 
         this.startTimer();
     }
@@ -152,20 +159,28 @@ class MemoryGame {
     win() {
         this.isPlaying = false;
         clearInterval(this.timer);
+        this.showWinMessage();
+    }
+
+    showWinMessage() {
         this.winMessage.style.display = 'flex';
         setTimeout(() => {
             this.winMessage.style.display = 'none';
-            this.startModal.style.display = 'flex';
+            this.showStartModal();
         }, GAME_CONFIG.WIN_MESSAGE_MS);
     }
 
     gameOver() {
         this.isPlaying = false;
         clearInterval(this.timer);
+        this.showLoseMessage();
+    }
+
+    showLoseMessage() {
         this.loseMessage.style.display = 'flex';
         setTimeout(() => {
             this.loseMessage.style.display = 'none';
-            this.startModal.style.display = 'flex';
+            this.showStartModal();
         }, GAME_CONFIG.LOSE_MESSAGE_MS);
     }
 
