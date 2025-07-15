@@ -1,6 +1,6 @@
 // Configuración global del juego
 const GAME_CONFIG = {
-    TIMER_SECONDS: 5,        // Tiempo total del juego en segundos
+    TIMER_SECONDS: 50,        // Tiempo total del juego en segundos
     AVAILABLE_CARDS: 8,      // Total de imágenes diferentes disponibles (del 1 al 8)
     PAIRS_TO_MATCH: 6,       // Número de pares que se usarán en el juego (siempre 6 porque es 3x4)
     FLIP_ANIMATION_MS: 400,  // Duración de la animación de volteo en milisegundos

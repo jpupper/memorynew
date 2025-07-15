@@ -6,6 +6,8 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
 body {
@@ -13,21 +15,23 @@ body {
     background: url('../img/fondo.png') no-repeat center center fixed;
     background-size: cover;
     font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 .container {
     max-width: 100%;
-    padding: 20px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .logo {
-    /* max-width: 70rem; */
-    /* margin-bottom: 20px; */
-    width: 90%;
-    margin: 10%;
+    width: min(300px, 80vw);
+    height: auto;
+    margin-bottom: 2vh;
 }
 
 .game-controls {
@@ -113,18 +117,17 @@ body {
 
 .timer-container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 2vh;
+    right: 2vw;
     z-index: 100;
 }
 
 .timer {
-    font-size: 24px;
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: min(1.5vh, 10px) min(2vw, 20px);
+    border-radius: 5px;
+    font-size: min(24px, 5vw);
 }
 
 .modal {
@@ -157,8 +160,8 @@ body {
 }
 
 #startButton {
-    font-size: 4.5rem;
-    padding: 40px 92px;
+    font-size: min(4.5rem, 8vw);
+    padding: min(40px, 5vh) min(92px, 10vw);
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -185,11 +188,34 @@ body {
 }
 
 .ganaste {
-    background-color: #4CAF50;
-    padding: 50px;
+    background-color: rgba(76, 175, 80, 0.9) !important;
+    padding: 20px !important;
 }
 
 .perdiste {
-    background-color: #f44336;
-    padding: 50px;
+    background-color: rgba(244, 67, 54, 0.9) !important;
+    padding: 20px !important;
+}
+
+/* Media query para landscape */
+@media (orientation: landscape) {
+    .container {
+        padding: 2vh;
+    }
+
+    .game-board {
+        gap: 2vh;
+        width: 90vh;
+        margin: 2vh auto;
+    }
+
+    .card {
+        height: 22vh;
+        width: calc((90vh - 4vh) / 3);
+    }
+
+    .logo {
+        width: 40vh;
+        margin-bottom: 2vh;
+    }
 }
