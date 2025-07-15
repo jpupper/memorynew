@@ -1,11 +1,23 @@
+// Configuración global del juego
+const GAME_CONFIG = {
+    TIMER_SECONDS: 50,        // Tiempo total del juego en segundos
+    TOTAL_CARDS: 9,         // Número total de cartas disponibles (1.png a 12.png)
+    PAIRS_TO_MATCH: 6,       // Número de pares que se usarán en el juego
+    FLIP_ANIMATION_MS: 400,  // Duración de la animación de volteo en milisegundos
+    WIN_MESSAGE_MS: 200000,    // Duración del mensaje de victoria (2 segundos)
+    LOSE_MESSAGE_MS: 200000,   // Duración del mensaje de derrota (2 segundos)
+    NEXT_TURN_DELAY_MS: 100  // Delay antes de poder voltear la siguiente carta
+};
+
 class MemoryGame {
     constructor() {
         this.cards = [];
         this.flippedCards = [];
         this.matchedPairs = 0;
         this.isPlaying = false;
-        this.timeLeft = 50;
+        this.timeLeft = GAME_CONFIG.TIMER_SECONDS;
         this.timer = null;
+        this.isFlipping = false;  // Nuevo: para controlar si hay cartas en animación
         
         this.gameBoard = document.querySelector('.game-board');
         this.startButton = document.getElementById('startButton');
@@ -18,9 +30,13 @@ class MemoryGame {
     }
 
     createCards() {
-        const cardValues = Array.from({length: 12}, (_, i) => i + 1);
-        const selectedValues = this.shuffleArray([...cardValues]).slice(0, 6);
+        // Crear array con números del 1 al total de cartas
+        const cardValues = Array.from({length: GAME_CONFIG.TOTAL_CARDS}, (_, i) => i + 1);
+        // Mezclar y tomar los primeros 6 números
+        const selectedValues = this.shuffleArray([...cardValues]).slice(0, GAME_CONFIG.PAIRS_TO_MATCH);
+        // Duplicar cada número para crear los pares
         const allCards = [...selectedValues, ...selectedValues];
+        // Mezclar nuevamente para distribuir los pares
         return this.shuffleArray(allCards);
     }
 
@@ -86,7 +102,7 @@ class MemoryGame {
     }
 
     flipCard(card) {
-        if (!this.isPlaying) return;
+        if (!this.isPlaying || this.isFlipping) return;
         if (this.flippedCards.length >= 2) return;
         if (card.classList.contains('flipped')) return;
 
@@ -94,7 +110,8 @@ class MemoryGame {
         this.flippedCards.push(card);
 
         if (this.flippedCards.length === 2) {
-            setTimeout(() => this.checkMatch(), 500);
+            this.isFlipping = true;
+            setTimeout(() => this.checkMatch(), GAME_CONFIG.FLIP_ANIMATION_MS);
         }
     }
 
@@ -104,17 +121,21 @@ class MemoryGame {
 
         if (match) {
             this.matchedPairs++;
-            if (this.matchedPairs === 6) {
+            if (this.matchedPairs === GAME_CONFIG.PAIRS_TO_MATCH) {
                 this.win();
             }
+            setTimeout(() => {
+                this.isFlipping = false;
+                this.flippedCards = [];
+            }, GAME_CONFIG.NEXT_TURN_DELAY_MS);
         } else {
             setTimeout(() => {
                 card1.classList.remove('flipped');
                 card2.classList.remove('flipped');
-            }, 1000);
+                this.isFlipping = false;
+                this.flippedCards = [];
+            }, GAME_CONFIG.FLIP_ANIMATION_MS);
         }
-
-        this.flippedCards = [];
     }
 
     win() {
@@ -124,7 +145,7 @@ class MemoryGame {
         setTimeout(() => {
             this.winMessage.style.display = 'none';
             this.startModal.style.display = 'flex';
-        }, 3000);
+        }, GAME_CONFIG.WIN_MESSAGE_MS);
     }
 
     gameOver() {
@@ -134,7 +155,7 @@ class MemoryGame {
         setTimeout(() => {
             this.loseMessage.style.display = 'none';
             this.startModal.style.display = 'flex';
-        }, 3000);
+        }, GAME_CONFIG.LOSE_MESSAGE_MS);
     }
 
     resetGame() {
@@ -142,7 +163,8 @@ class MemoryGame {
         this.cards = [];
         this.flippedCards = [];
         this.matchedPairs = 0;
-        this.timeLeft = 50;
+        this.isFlipping = false;
+        this.timeLeft = GAME_CONFIG.TIMER_SECONDS;
         this.timeDisplay.textContent = this.timeLeft;
         this.winMessage.style.display = 'none';
         this.loseMessage.style.display = 'none';
