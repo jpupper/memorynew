@@ -1,3 +1,23 @@
+// Verificar si debe mostrar el botón de fullscreen
+const urlParams = new URLSearchParams(window.location.search);
+const showFullscreen = urlParams.get('fullscreen') === 'true';
+
+if (showFullscreen) {
+    const fullscreenButton = document.getElementById('fullscreenButton');
+    fullscreenButton.style.display = 'block';
+    
+    fullscreenButton.addEventListener('click', () => {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) {
+            document.documentElement.msRequestFullscreen();
+        }
+        fullscreenButton.style.display = 'none';
+    });
+}
+
 // Configuración global del juego
 const GAME_CONFIG = {
     TIMER_SECONDS: 50,        // Tiempo total del juego en segundos
