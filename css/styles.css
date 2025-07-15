@@ -217,22 +217,35 @@ body {
 @media (orientation: landscape) {
     .container {
         padding: 2vh;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2vh;
+    }
+
+    .game-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
     }
 
     .game-board {
         gap: 2vh;
-        width: 90vh;
-        margin: 2vh auto;
+        width: auto;
+        margin: 0;
     }
 
     .card {
-        height: 22vh;
-        width: calc((90vh - 4vh) / 3);
+        height: 18vh;
+        width: calc((62vh) / 3);
     }
 
     .logo {
         width: 40vh;
-        margin-bottom: 2vh;
+        margin: 0;
     }
 }
 
